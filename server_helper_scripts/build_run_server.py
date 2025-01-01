@@ -2,9 +2,10 @@ import os
 import subprocess
 
 java_version = "21.0.5"
-server_jar_path = "server.jar"
+server_jar_path = "../server-j21.0.5/src/"
+binary_filename = "server.jar"
 
-os.chdir("src")
+os.chdir(server_jar_path)
 
 def validate_java_version():
     result = subprocess.run(["java", "-version"], capture_output=True, text=True)
@@ -17,7 +18,7 @@ def validate_java_version():
 
 def build_run():
 
-    process = subprocess.Popen(["java", "-Xmx1024M", "-Xms1024M", "-jar", server_jar_path, "nogui"], text=True)
+    process = subprocess.Popen(["java", "-Xmx1024M", "-Xms1024M", "-jar", binary_filename, "nogui"], text=True)
 
     print(f"Server started with PID: {process.pid}")
 
