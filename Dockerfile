@@ -11,7 +11,8 @@ WORKDIR /server
 # | all others files and folders will be created when server.jar is executed       |
 # .--------------------------------------------------------------------------------.
 # Copy build minecraft server files
-COPY src /server
+COPY out /server
+COPY ../scripts /server/scripts
 
 EXPOSE 25565
 

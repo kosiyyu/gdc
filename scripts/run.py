@@ -1,10 +1,13 @@
 import os
+import sys
+import time
 import psutil
 import subprocess
-import time
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from env_loader.env_loader import env
 
-SRC_PATH = "../server-j21.0.5/src/"
-BINARY_FILENAME = "server.jar"
+SRC_PATH = env["SRC_PATH"]
+BINARY_FILENAME = env["BINARY_FILENAME"]
 
 os.chdir(SRC_PATH)
 

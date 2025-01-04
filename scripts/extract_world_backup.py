@@ -1,12 +1,14 @@
 import os
+import sys
 import shutil as sh
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from env_loader.env_loader import env
 
-BACKUP_FILENAME = "world_backup.tar.gz"
-OUT_DIR = "world_backup"
-LOG_FILENAME = "world_backup/world_backup.log"
-SRC_PATH = "../server-j21.0.5/src/"
+BACKUP_FILENAME = env["BACKUP_FILENAME"]
+LOG_PATH = os.path.join(env["BACKUP_FILENAME"], env["LOG_FILENAME"])
+BACKUP_DIR = env["BACKUP_DIR"]
 
-os.chdir(SRC_PATH)
+os.chdir(env["SRC_PATH"])
 
 def extract():
     if not os.path.exists(BACKUP_FILENAME):
@@ -14,11 +16,11 @@ def extract():
 
     sh.unpack_archive(filename=BACKUP_FILENAME, format="gztar", extract_dir=".")
 
-    if os.path.exists(LOG_FILENAME):
-        os.remove(LOG_FILENAME)
+    if os.path.exists(LOG_PATH):
+        os.remove(LOG_PATH)
 
-    for item in os.listdir(OUT_DIR):
-        src_path = os.path.join(OUT_DIR, item)
+    for item in os.listdir(BACKUP_DIR):
+        src_path = os.path.join(BACKUP_DIR, item)
         dest_path = os.path.join(".", item)
 
         if os.path.exists(dest_path):
@@ -34,11 +36,11 @@ def extract():
         sh.move(src_path, dest_path)
 
 def cleanup():
-    if not os.path.exists(OUT_DIR) or not os.path.exists(BACKUP_FILENAME):
+    if not os.path.exists(BACKUP_DIR) or not os.path.exists(BACKUP_FILENAME):
         raise RuntimeError(f"Error: Cleanup failed.")
 
     # This directory should be empty
-    os.rmdir(OUT_DIR)
+    os.rmdir(BACKUP_DIR)
     os.remove(BACKUP_FILENAME)
     
 

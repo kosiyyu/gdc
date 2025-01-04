@@ -1,15 +1,18 @@
 import os
 import shutil as sh
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from env_loader.env_loader import env
 
-SRC_PATH = "../server-j21.0.5/src/"
+EULA_FILENAME = env["EULA_FILENAME"]
 
-os.chdir(SRC_PATH)
+os.chdir(env["SRC_PATH"])
 
 def delete_server_files():
     file_list = os.listdir()
 
     for item in file_list:
-        if item.endswith(".jar") or item == "eula.txt":
+        if item.endswith(".jar") or item == EULA_FILENAME:
             print(f"Log: Skipping file {item}.")
             continue
         
