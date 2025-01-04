@@ -1,5 +1,5 @@
 /server-j21.0.5/src
-# /out
+/out
 *.pyc
 *.zip
 *.tar.gz
