@@ -1,8 +1,8 @@
 FROM alpine:latest AS build
 
-RUN apk add udev openjdk21-jre python3 py3-pip py3-boto3
+RUN apk add udev openjdk21-jre python3 py3-pip
+RUN pip install --break-system-packages python-dotenv
 
-WORKDIR /server
 
 # Info:
 # .--------------------------------------------------------------------------------.
@@ -11,10 +11,14 @@ WORKDIR /server
 # | all others files and folders will be created when server.jar is executed       |
 # .--------------------------------------------------------------------------------.
 # Copy build minecraft server files
-COPY out /server
-COPY ../scripts /server/scripts
+COPY out /out
+COPY env_loader /env_loader
+COPY scripts /scripts
+COPY .env_common .env_common
+
+WORKDIR /out
 
 EXPOSE 25565
 
 # Run the minecraft server
-CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "/server/server.jar", "nogui"]
+CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "/out/server.jar", "nogui"]

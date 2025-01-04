@@ -20,7 +20,7 @@ class EnvVariables(TypedDict):
     OPS_FILENAME: str
 
 def load_env() -> EnvVariables:
-    env_path = os.path.join(os.path.dirname(__file__), '.env_common')
+    env_path = os.path.join(os.path.dirname(__file__), '..', '.env_common')
 
     load_dotenv(os.path.abspath(env_path), override=True)
 
