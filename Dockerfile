@@ -1,8 +1,9 @@
 FROM alpine:latest AS build
 
-RUN apk add udev openjdk21-jre python3 py3-pip
+# RUN apk add udev openjdk21-jre python3 py3-pip gcc python3-dev musl-dev linux-headers
+RUN apk add udev openjdk21-jre python3 py3-pip gcc python3-dev musl-dev linux-headers
 RUN pip install --break-system-packages python-dotenv
-
+RUN pip install --break-system-packages psutil
 
 # Info:
 # .--------------------------------------------------------------------------------.
@@ -16,9 +17,7 @@ COPY env_loader /env_loader
 COPY scripts /scripts
 COPY .env_common .env_common
 
-WORKDIR /out
-
 EXPOSE 25565
 
 # Run the minecraft server
-CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "/out/server.jar", "nogui"]
+CMD ["python", "/scripts/run.py"]
