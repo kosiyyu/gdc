@@ -116,6 +116,11 @@ def loop(popen: Popen) -> bool:
             return False
 
 def main():
+    print(os.getenv("PUSH_BACKUP_URL"))
+    print(os.getenv("PULL_BACKUP_URL"))
+
+
+
     try:
         proc = build_run()
         is_alive = loop(proc)
