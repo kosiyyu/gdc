@@ -1,4 +1,4 @@
-package startstop
+package main
 
 import (
 	"context"
@@ -11,8 +11,7 @@ import (
 )
 
 type Request struct {
-	Command    string `json:"command"`
-	InstanceId string `json:"instance_id"`
+	Command string `json:"command"`
 }
 
 type Response struct {
@@ -20,23 +19,22 @@ type Response struct {
 	Body       string `json:"body"`
 }
 
-func handleRequest(ctx context.Context, event json.RawMessage) Response {
-	// todo, load
-	cluster := ""
-	service := ""
+func handleRequest(ctx context.Context, event json.RawMessage) (Response, error) {
+	cluster := "minecraft-cluster"
+	service := "mincraft-server-service"
 
 	var request Request
 	err := json.Unmarshal(event, &request)
 	if err != nil {
 		log.Printf("Failed to unmarshal event: %v", err)
-		return Response{StatusCode: 400, Body: "Invalid request"}
+		return Response{StatusCode: 400, Body: "Invalid request"}, err
 	}
 
 	cfg, err := config.LoadDefaultConfig(ctx,
 		config.WithRegion("eu-north-1"),
 	)
 	if err != nil {
-		return Response{StatusCode: 500, Body: "Failed to load configurationt"}
+		return Response{StatusCode: 500, Body: "Failed to load configuration"}, err
 	}
 
 	ecsClient := ecs.NewFromConfig(cfg)
@@ -47,7 +45,7 @@ func handleRequest(ctx context.Context, event json.RawMessage) Response {
 	} else if request.Command == "Stop" {
 		desiredCount = 0
 	} else {
-		return Response{StatusCode: 400, Body: "Invalid command. Use 'Start' or 'Stop'"}
+		return Response{StatusCode: 400, Body: "Invalid command. Use 'Start' or 'Stop'"}, nil
 	}
 
 	input := &ecs.UpdateServiceInput{
@@ -59,16 +57,16 @@ func handleRequest(ctx context.Context, event json.RawMessage) Response {
 	_, err = ecsClient.UpdateService(ctx, input)
 	if err != nil {
 		log.Printf("Failed to update service: %v", err)
-		return Response{StatusCode: 500, Body: "Failed to update container"}
+		return Response{StatusCode: 500, Body: "Failed to update container"}, err
 	}
 
 	if request.Command == "Start" {
-		return Response{StatusCode: 200, Body: "Container started."}
+		return Response{StatusCode: 200, Body: "Container started."}, nil
 	} else if request.Command == "Stop" {
-		return Response{StatusCode: 200, Body: "Container stoped."}
+		return Response{StatusCode: 200, Body: "Container stopped."}, nil
 	}
 
-	return Response{StatusCode: 500, Body: "Internal server error"}
+	return Response{StatusCode: 500, Body: "Internal server error"}, nil
 
 }
 
