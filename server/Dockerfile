@@ -1,7 +1,12 @@
 FROM alpine:latest AS build
 
 # RUN apk add udev openjdk21-jre python3 py3-pip gcc python3-dev musl-dev linux-headers
-RUN apk add udev openjdk21-jre python3 py3-pip gcc python3-dev musl-dev linux-headers
+RUN apk add udev
+RUN apk add openjdk21-jre
+RUN apk add python3 py3-pip
+RUN apk add gcc python3-dev musl-dev
+RUN apk add linux-headers
+
 RUN pip install --break-system-packages python-dotenv
 RUN pip install --break-system-packages psutil
 

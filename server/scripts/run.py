@@ -9,8 +9,8 @@ from env_loader.env_loader import env
 
 SRC_PATH = env["SRC_PATH"]
 BINARY_FILENAME = env["BINARY_FILENAME"]
-# MAX_RUNTIME = 7200
-MAX_RUNTIME = 60
+MAX_RUNTIME = 7200 # in seconds
+# MAX_RUNTIME = 3600 # in seconds
 
 os.chdir(SRC_PATH)
 
@@ -116,11 +116,6 @@ def loop(popen: Popen) -> bool:
             return False
 
 def main():
-    print(os.getenv("PUSH_BACKUP_URL"))
-    print(os.getenv("PULL_BACKUP_URL"))
-
-
-
     try:
         proc = build_run()
         is_alive = loop(proc)
