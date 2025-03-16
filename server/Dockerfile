@@ -17,7 +17,8 @@ RUN pip install --break-system-packages psutil
 # | all others files and folders will be created when server.jar is executed       |
 # .--------------------------------------------------------------------------------.
 # Copy build minecraft server files
-COPY out /out
+COPY out /flag
+RUN mkdir out
 COPY env_loader /env_loader
 COPY scripts /scripts
 COPY .env_common .env_common
@@ -25,4 +26,4 @@ COPY .env_common .env_common
 EXPOSE 25565
 
 # Run the minecraft server
-CMD ["python", "/scripts/run.py"]
+CMD ["python", "/scripts/run_with_volume.py"]
