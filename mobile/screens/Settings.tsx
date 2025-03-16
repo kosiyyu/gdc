@@ -127,7 +127,7 @@ export default function Settings() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.settings}>
+      <View style={styles.main}>
         <ButtonRound iconName={'home'} onPress={navigateToMain} />
       </View>
 
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: Platform.OS === 'android' ? 25 : 0,
   },
-  settings: {
+  main: {
     marginTop: 30,
     paddingRight: 10,
     marginBottom: 5,
@@ -219,6 +219,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: '#b4f7ae',
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#4da944',
   },
   header: {
     width: '100%',

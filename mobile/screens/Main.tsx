@@ -126,18 +126,21 @@ export default function Main() {
                 : 'Last used command is "Stop"'}
             </Text>
           </View>
-          <ButtonRound
-            iconName={'flash-outline'}
-            onPress={() => {
-              fetchStartStop(true);
-            }}
-          />
-          <ButtonRound
-            iconName={'flash-off-outline'}
-            onPress={() => {
-              fetchStartStop(false);
-            }}
-          />
+          <View style={styles.buttonsContainer}>
+            <ButtonRound
+              iconName={'flash-outline'}
+              onPress={() => {
+                fetchStartStop(true);
+              }}
+            />
+            <View style={{ width: 5 }} />
+            <ButtonRound
+              iconName={'flash-off-outline'}
+              onPress={() => {
+                fetchStartStop(false);
+              }}
+            />
+          </View>
         </View>
         <Text style={styles.logLabel}>API Response Data</Text>
         <TextInput
@@ -224,6 +227,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: '#b4f7ae',
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#4da944',
   },
   header: {
     width: '100%',
@@ -231,6 +236,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#b4f7ae',
     borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  buttonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
