@@ -1,34 +1,101 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Platform } from 'react-native';
 import ButtonRound from '../components/ButtonRound';
-import Toggle from '../components/Toggle';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import useGetItem from '../hooks/UseGetItem';
+import entries from '../asyncStorage';
 
 export default function Main() {
   const [statusLogs, setStatusLogs] = useState<string>('');
   const [controllerLogs, setControllerLogs] = useState<string>('');
   const [isStatus, setIsStatus] = useState<boolean>(false);
-  const [isStartServer, setIsStartServer] = useState<boolean>(false);
+  const [isStartStop, setIsStartStop] = useState<boolean>(false);
   const [lastChecked, setLastChecked] = useState<string>('');
-  const [serverIP, setServerIP] = useState<string>('');
 
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const getItem = useGetItem();
 
   const fetchStatus = async () => {
     const timestamp = new Date().toLocaleTimeString();
+
     setLastChecked(timestamp);
+
+    try {
+      const url = await getItem(entries.URL);
+      if (!url) return;
+      const key = await getItem(entries.KEY);
+      if (!key) return;
+
+      const resp = await fetch(`${url}/status`, {
+        headers: {
+          'x-api-key': key,
+        },
+        method: 'GET',
+      });
+
+      const jsonData = await resp.json();
+      if ('Container is not running' === jsonData.body) {
+        setIsStatus(false);
+      } else if (
+        (jsonData.body as string).startsWith('Container is running using ip:')
+      ) {
+        setIsStatus(true);
+      } else {
+        setIsStatus(false);
+      }
+
+      setStatusLogs(JSON.stringify(jsonData));
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) {
+        setStatusLogs(e.message);
+      } else {
+        setStatusLogs('An unknown error occurred');
+      }
+    }
+  };
+
+  const fetchStartStop = async (isStart: boolean = false) => {
+    try {
+      const url = await getItem(entries.URL);
+      if (!url) return;
+      const key = await getItem(entries.KEY);
+      if (!key) return;
+
+      const resp = await fetch(`${url}/container`, {
+        headers: {
+          'x-api-key': key,
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          Command: isStart ? 'Start' : 'Stop',
+        }),
+      });
+
+      const jsonData = await resp.json();
+      if ('Container stopped.' === jsonData.body) {
+        setIsStartStop(false);
+      } else if ('Container started.' === jsonData.body) {
+        setIsStartStop(true);
+      } else {
+        setIsStartStop(false);
+      }
+
+      setControllerLogs(JSON.stringify(jsonData));
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) {
+        setControllerLogs(e.message);
+      } else {
+        setControllerLogs('An unknown error occurred');
+      }
+    }
   };
 
   useEffect(() => {
@@ -54,15 +121,21 @@ export default function Main() {
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerText}>API Controller</Text>
             <Text style={styles.subHeaderText}>
-              {isStartServer
-                ? 'Server is set to running'
-                : 'Server is set to stop'}
+              {isStartStop
+                ? 'Last used command is "Start"'
+                : 'Last used command is "Stop"'}
             </Text>
           </View>
-          <Toggle
-            value={isStartServer}
-            onToggle={() => {
-              setIsStartServer(!isStartServer);
+          <ButtonRound
+            iconName={'flash-outline'}
+            onPress={() => {
+              fetchStartStop(true);
+            }}
+          />
+          <ButtonRound
+            iconName={'flash-off-outline'}
+            onPress={() => {
+              fetchStartStop(false);
             }}
           />
         </View>
@@ -70,8 +143,8 @@ export default function Main() {
         <TextInput
           value={controllerLogs}
           multiline={true}
-          editable={false}
           style={styles.textInput}
+          showSoftInputOnFocus={false}
         />
       </View>
 
@@ -101,21 +174,12 @@ export default function Main() {
           <ButtonRound iconName={'refresh'} onPress={fetchStatus} />
         </View>
 
-        {isStatus && (
-          <View style={styles.ipContainer}>
-            <Text style={styles.ipLabel}>Server IP:</Text>
-            <TouchableOpacity>
-              <Text style={styles.ipAddress}>{serverIP}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
         <Text style={styles.logLabel}>API Response Data</Text>
         <TextInput
           value={statusLogs}
           multiline={true}
-          editable={false}
           style={styles.textInput}
+          showSoftInputOnFocus={false}
         />
       </View>
 
@@ -206,21 +270,5 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#e1f9df',
     padding: 8,
-  },
-  ipContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#e1f9df',
-    padding: 6,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  ipLabel: {
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  ipAddress: {
-    color: '#0066cc',
-    textDecorationLine: 'underline',
   },
 });
