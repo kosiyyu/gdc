@@ -1,6 +1,9 @@
-/server-j21.0.5/src
-/out
+container/out
 *.pyc
 *.zip
 *.tar.gz
 bootstrap
+*.aab
+*.apk
+mobile/android
+mobile/ios
