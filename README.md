@@ -1,12 +1,13 @@
 # GDC - Game Distribution Controller
 
-**Author:** Karol Koś
+> Author: Karol Koś
 
 ## Overview
 
 The Game Distribution Controller (GDC) is a side project of mine—an API for managing game servers with the help of a mobile application for easier access. The system leverages AWS infrastructure to provide game server provisioning and management.
 
-> **Important:** Currently, the implementation consists only of a **Minecraft Vanilla server**.
+> [!IMPORTANT]
+> Currently, the implementation consists only of a **Minecraft Vanilla server**.
 
 ## System Components
 
@@ -47,4 +48,5 @@ GDC consists of two main components:
 - **Backup and Restore:** Ability to back up Minecraft worlds and import/export them.
 - **Additional Game Servers:** Support for **Don't Starve Together** and **Counter-Strike (Vanilla)**.
 
-New game support will be added **only if I don't get bored with this project**.
+> [!NOTE]
+> New game support will be added **only if I don't get bored with this project**.
