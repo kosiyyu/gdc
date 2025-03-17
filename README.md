@@ -33,7 +33,8 @@ GDC consists of two main components:
 - React Native
 - TypeScript
 
-> **Note:** Deployment automation will be added in the near future.
+> [!NOTE]
+> Deployment automation will be added in the near future.
 
 ## Current Features
 
